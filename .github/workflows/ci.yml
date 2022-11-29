@@ -486,3 +486,7 @@ jobs:
           docker push ${{ matrix.image }}:${{ needs.config.outputs.version }}
           docker tag ${{ matrix.image }}:${{ steps.common-tag.outputs.common-tag }} ${{ matrix.image }}:latest
           docker push ${{ matrix.image }}:latest
+
+#
+#  vim: set syntax=yaml:
+#
