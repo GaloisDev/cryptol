@@ -4,7 +4,8 @@ name: Cryptol
 on:
   push:
     tags: ["[0-9]+.[0-9]+(.[0-9]+)?"]
-    branches: [master, "release-**"]
+    #branches: [master, "release-**"]
+    branches: [master, "release-**", "ci-reorg"]
   pull_request:
   schedule:
     - cron: "0 10 * * *" # 10am UTC -> 2/3am PST
