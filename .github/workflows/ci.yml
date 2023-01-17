@@ -62,83 +62,83 @@ jobs:
    #
    # Build (Binary Only)
    #
-#  build:
-#    runs-on: ${{ matrix.os }}
-#    needs: [config]
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [ubuntu-22.04, macos-12, windows-2019]
-#        ghc-version: ["8.10.7", "9.0.2", "9.2.4"]
-#        run-tests: [true]
-#        exclude:
-#          - os: windows-2019
-#            ghc-version: 9.0.2
-#            run-tests: true
-#          - os: windows-2019
-#            ghc-version: 9.2.4
-#            run-tests: true
-#        include:
-#          # We include one job from an older Ubuntu LTS release to increase our
-#          # coverage of possible Linux configurations. Since we already run the
-#          # tests with the newest LTS release, we won't bother testing this one.
-#          - os: ubuntu-20.04
-#            ghc-version: 8.10.7
-#            run-tests: false
-#    outputs:
-#      test-lib-json: ${{ steps.test-lib.outputs.targets-json }}
-#    env:
-#      VERSION: ${{ needs.config.outputs.version }}
-#      RELEASE: ${{ needs.config.outputs.release }}
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          submodules: true
+  build:
+    runs-on: ${{ matrix.os }}
+    needs: [config]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-12, windows-2019]
+        ghc-version: ["8.10.7", "9.0.2", "9.2.4"]
+        run-tests: [true]
+        exclude:
+          - os: windows-2019
+            ghc-version: 9.0.2
+            run-tests: true
+          - os: windows-2019
+            ghc-version: 9.2.4
+            run-tests: true
+        include:
+          # We include one job from an older Ubuntu LTS release to increase our
+          # coverage of possible Linux configurations. Since we already run the
+          # tests with the newest LTS release, we won't bother testing this one.
+          - os: ubuntu-20.04
+            ghc-version: 8.10.7
+            run-tests: false
+    outputs:
+      test-lib-json: ${{ steps.test-lib.outputs.targets-json }}
+    env:
+      VERSION: ${{ needs.config.outputs.version }}
+      RELEASE: ${{ needs.config.outputs.release }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
 
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.7'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
 
-#      - uses: abatilo/actions-poetry@v2.0.0
-#        with:
-#          poetry-version: 1.1.6
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.6
 
-#      - uses: haskell/actions/setup@v1
-#        id: setup-haskell
-#        with:
-#          ghc-version: ${{ matrix.ghc-version }}
+      - uses: haskell/actions/setup@v1
+        id: setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
 
-#      - name: Post-GHC installation fixups on Windows
-#        shell: bash
-#        if: runner.os == 'Windows'
-#        run: |
-#          # A workaround for https://github.com/Mistuke/CabalChoco/issues/5
-#          cabal user-config update -a "extra-include-dirs: \"\""
-#          cabal user-config update -a "extra-lib-dirs: \"\""
+      - name: Post-GHC installation fixups on Windows
+        shell: bash
+        if: runner.os == 'Windows'
+        run: |
+          # A workaround for https://github.com/Mistuke/CabalChoco/issues/5
+          cabal user-config update -a "extra-include-dirs: \"\""
+          cabal user-config update -a "extra-lib-dirs: \"\""
 
-#      - uses: actions/cache@v2
-#        name: Cache cabal store
-#        with:
-#          path: |
-#            ${{ steps.setup-haskell.outputs.cabal-store }}
-#            dist-newstyle
-#          key: ${{ env.CACHE_VERSION }}-cabal-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles(format('cabal.GHC-{0}.config', matrix.ghc-version)) }}-${{ github.sha }}
-#          restore-keys: |
-#            ${{ env.CACHE_VERSION }}-cabal-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles(format('cabal.GHC-{0}.config', matrix.ghc-version)) }}-
+      - uses: actions/cache@v2
+        name: Cache cabal store
+        with:
+          path: |
+            ${{ steps.setup-haskell.outputs.cabal-store }}
+            dist-newstyle
+          key: ${{ env.CACHE_VERSION }}-cabal-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles(format('cabal.GHC-{0}.config', matrix.ghc-version)) }}-${{ github.sha }}
+          restore-keys: |
+            ${{ env.CACHE_VERSION }}-cabal-${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles(format('cabal.GHC-{0}.config', matrix.ghc-version)) }}-
 
-#      - shell: bash
-#        run: .github/ci.sh install_system_deps
-#        env:
-#          BIN_ZIP_FILE: ${{ matrix.os }}-bin.zip
+      - shell: bash
+        run: .github/ci.sh install_system_deps
+        env:
+          BIN_ZIP_FILE: ${{ matrix.os }}-bin.zip
 
-#      - shell: bash
-#        env:
-#          RELEASE: ${{ needs.config.outputs.release }}
-#        run: .github/ci.sh build
+      - shell: bash
+        env:
+          RELEASE: ${{ needs.config.outputs.release }}
+        run: .github/ci.sh build
 
-#      - shell: bash
-#        run: .github/ci.sh setup_dist_bins
-#
+      - shell: bash
+        run: .github/ci.sh setup_dist_bins
+
       #
       # Test Docs
       #
