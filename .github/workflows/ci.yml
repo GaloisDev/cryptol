@@ -136,8 +136,8 @@ jobs:
           RELEASE: ${{ needs.config.outputs.release }}
         run: .github/ci.sh build
 
-      #- shell: bash
-      #  run: .github/ci.sh setup_dist_bins
+      - shell: bash
+        run: .github/ci.sh setup_dist_bins
 
   #
   # Test Docs
