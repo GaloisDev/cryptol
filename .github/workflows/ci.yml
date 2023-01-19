@@ -144,7 +144,7 @@ jobs:
   #
   test-docs:
     runs-on: ${{ matrix.os }}
-    needs: [config]
+    needs: [build]
     strategy:
       fail-fast: false
       matrix:
